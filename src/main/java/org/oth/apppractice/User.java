@@ -1,6 +1,10 @@
 package org.oth.apppractice;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Past;
+import jakarta.validation.constraints.Positive;
 import lombok.*;
 import org.hibernate.proxy.HibernateProxy;
 
@@ -27,10 +31,15 @@ public class User {
             generator = "student_sequence"
     )
     private Long id;
+    @NotBlank(message = "Name is required")
     private String name;
+    @NotBlank(message = "Email is required")
+    @Email(message = "Email must be valid")
     private String email;
+    @Positive(message = "Age must be positive")
     @Transient
     private Integer age;
+    @Past(message = "Date of birth must be in the past")
     private LocalDate dob;
 
     public Integer getAge() {
