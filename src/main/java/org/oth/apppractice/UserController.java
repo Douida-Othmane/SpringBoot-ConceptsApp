@@ -1,11 +1,15 @@
 package org.oth.apppractice;
 
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.Min;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@Validated
 @RestController
 @RequestMapping(path = "/api/v1/User")
 public class UserController {
@@ -20,13 +24,13 @@ public class UserController {
     }
 
     @GetMapping("/{userId}")
-    public ResponseEntity<User> getUserById(@PathVariable Long userId){
+    public ResponseEntity<User> getUserById(@PathVariable @Min(1) Long userId){
         User user = userService.findById(userId);
         return ResponseEntity.ok().body(user);
     }
 
     @PostMapping
-    public ResponseEntity<User> addUser(@RequestBody User user){
+    public ResponseEntity<User> addUser(@Valid @RequestBody User user){
         userService.saveUser(user);
         return ResponseEntity.ok().build();
     }
