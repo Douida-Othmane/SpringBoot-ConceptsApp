@@ -58,5 +58,19 @@ public class UserService {
         }
         userRepository.save(user);
     }
+
+    public void updateEmailTransactional(Long userId, String email) throws BusinessException {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new IllegalStateException("User with id " + userId + " not found"));
+        if(email == null || email.isBlank()){
+            throw new BusinessException("Email cannot be empty");
+        }
+
+        if (email.endsWith("@blocked.com")) {
+            throw new BusinessException("This domain is forbidden");
+        }
+
+        user.setEmail(email);
+    }
 }
 
