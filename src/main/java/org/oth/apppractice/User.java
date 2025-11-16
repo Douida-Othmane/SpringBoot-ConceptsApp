@@ -10,6 +10,7 @@ import org.hibernate.proxy.HibernateProxy;
 
 import java.time.LocalDate;
 import java.time.Period;
+import java.util.List;
 import java.util.Objects;
 
 @Getter
@@ -41,6 +42,9 @@ public class User {
     private Integer age;
     @Past(message = "Date of birth must be in the past")
     private LocalDate dob;
+
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+    private List<Address> addresses;
 
     public Integer getAge() {
         return Period.between(dob, LocalDate.now()).getYears();
