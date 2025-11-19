@@ -14,6 +14,8 @@ import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
+import org.oth.apppractice.DTO.UserDTO;
+import org.oth.apppractice.Exception.GlobalExceptionHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ContextConfiguration;
@@ -27,7 +29,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 @ContextConfiguration(classes = {UserController.class, GlobalExceptionHandler.class})
 @DisabledInAotMode
 @ExtendWith(SpringExtension.class)
-class UserControllerDiffblueTest {
+class UserControllerTest {
     @Autowired
     private GlobalExceptionHandler globalExceptionHandler;
 

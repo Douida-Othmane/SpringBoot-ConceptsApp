@@ -1,6 +1,9 @@
 package org.oth.apppractice;
 
 import jakarta.transaction.Transactional;
+import org.oth.apppractice.DTO.UserDTO;
+import org.oth.apppractice.Entity.User;
+import org.oth.apppractice.Exception.BusinessException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

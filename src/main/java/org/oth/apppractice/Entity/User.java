@@ -1,4 +1,4 @@
-package org.oth.apppractice;
+package org.oth.apppractice.Entity;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
