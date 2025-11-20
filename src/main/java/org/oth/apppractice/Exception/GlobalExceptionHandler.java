@@ -1,4 +1,4 @@
-package org.oth.apppractice;
+package org.oth.apppractice.Exception;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.ConstraintViolationException;
