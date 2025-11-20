@@ -1,8 +1,8 @@
 package org.oth.apppractice.mapper;
 
 import org.mapstruct.Mapper;
-import org.oth.apppractice.User;
-import org.oth.apppractice.UserDTO;
+import org.oth.apppractice.Entity.User;
+import org.oth.apppractice.DTO.UserDTO;
 
 import java.util.List;
 
