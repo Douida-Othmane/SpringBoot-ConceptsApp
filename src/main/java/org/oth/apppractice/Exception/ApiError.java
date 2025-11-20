@@ -1,4 +1,4 @@
-package org.oth.apppractice;
+package org.oth.apppractice.Exception;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
