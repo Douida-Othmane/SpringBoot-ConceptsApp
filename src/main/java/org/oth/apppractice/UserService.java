@@ -1,6 +1,7 @@
 package org.oth.apppractice;
 
 import jakarta.transaction.Transactional;
+import org.oth.apppractice.mapper.UserMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -11,21 +12,26 @@ import java.util.Objects;
 public class UserService {
 
     private final UserRepository userRepository;
+    private final UserMapper userMapper;
 
     @Autowired
-    public UserService(UserRepository userRepository) {
+    public UserService(UserRepository userRepository, UserMapper userMapper) {
         this.userRepository = userRepository;
+        this.userMapper = userMapper;
     }
 
-    public User findById(Long id) {
-        return userRepository.findById(id).orElse(null);
+    public UserDTO findById(Long id) {
+        User user = userRepository.findById(id).orElse(null);
+        return userMapper.toDto(user);
     }
 
-    public List<User> getUsers(){
-        return userRepository.findAll();
+    public List<UserDTO> getUsers(){
+        List<User> users = userRepository.findAll();
+        return userMapper.toDtoList(users);
     }
 
-    public void saveUser(User user){
+    public void saveUser(UserDTO userDTO){
+        User user = userMapper.fromDto(userDTO);
         userRepository.findUserByEmail(user.getEmail())
                 .ifPresent(u -> {
                     throw new IllegalStateException("Email already in use");
