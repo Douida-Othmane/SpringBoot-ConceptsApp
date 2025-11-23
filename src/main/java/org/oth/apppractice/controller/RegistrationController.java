@@ -1,6 +1,8 @@
-package org.oth.apppractice.registration;
+package org.oth.apppractice.controller;
 
 import lombok.AllArgsConstructor;
+import org.oth.apppractice.dto.RegistrationRequestDto;
+import org.oth.apppractice.service.RegistrationService;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -11,7 +13,7 @@ public class RegistrationController {
     private final RegistrationService registrationService;
 
     @PostMapping
-    public String register(@RequestBody RegistrationRequestDTO request){
+    public String register(@RequestBody RegistrationRequestDto request){
         return registrationService.register(request);
     }
 

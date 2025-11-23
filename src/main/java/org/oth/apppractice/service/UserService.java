@@ -1,9 +1,10 @@
-package org.oth.apppractice;
+package org.oth.apppractice.service;
 
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.oth.apppractice.Entity.User;
-import org.oth.apppractice.DTO.UserDTO;
+import org.oth.apppractice.dto.UserDto;
+import org.oth.apppractice.UserRepository;
 import org.oth.apppractice.mapper.UserMapper;
 import org.oth.apppractice.Exception.BusinessException;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -22,18 +23,18 @@ public class UserService implements UserDetailsService {
     private final UserMapper userMapper;
 
 
-    public UserDTO findById(Long id) {
+    public UserDto findById(Long id) {
         User user = userRepository.findById(id).orElse(null);
         return userMapper.toDto(user);
     }
 
-    public List<UserDTO> getUsers(){
+    public List<UserDto> getUsers(){
         List<User> users = userRepository.findAll();
         return userMapper.toDtoList(users);
     }
 
-    public void saveUser(UserDTO userDTO){
-        User user = userMapper.fromDto(userDTO);
+    public void saveUser(UserDto userDto){
+        User user = userMapper.fromDto(userDto);
         userRepository.findUserByEmail(user.getEmail())
                 .ifPresent(u -> {
                     throw new IllegalStateException("Email already in use");

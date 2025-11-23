@@ -1,9 +1,10 @@
-package org.oth.apppractice;
+package org.oth.apppractice.controller;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
+import org.oth.apppractice.service.UserService;
 import org.springframework.http.ResponseEntity;
-import org.oth.apppractice.DTO.UserDTO;
+import org.oth.apppractice.dto.UserDto;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,20 +22,20 @@ public class UserController {
     }
 
     @GetMapping
-    public ResponseEntity<List<UserDTO>> getUsers(){
-        List<UserDTO> userDTOs = userService.getUsers();
-        return ResponseEntity.ok().body(userDTOs);
+    public ResponseEntity<List<UserDto>> getUsers(){
+        List<UserDto> userDtos = userService.getUsers();
+        return ResponseEntity.ok().body(userDtos);
     }
 
     @GetMapping("/{userId}")
-    public ResponseEntity<UserDTO> getUserById(@PathVariable @Min(1) Long userId){
-        UserDTO userDTO = userService.findById(userId);
-        return ResponseEntity.ok().body(userDTO);
+    public ResponseEntity<UserDto> getUserById(@PathVariable @Min(1) Long userId){
+        UserDto userDto = userService.findById(userId);
+        return ResponseEntity.ok().body(userDto);
     }
 
     @PostMapping
-    public ResponseEntity<UserDTO> addUser(@Valid @RequestBody UserDTO userDTO){
-        userService.saveUser(userDTO);
+    public ResponseEntity<UserDto> addUser(@Valid @RequestBody UserDto userDto){
+        userService.saveUser(userDto);
         return ResponseEntity.ok().build();
     }
 
