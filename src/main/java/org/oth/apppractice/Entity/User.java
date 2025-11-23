@@ -52,25 +52,21 @@ public class User implements UserDetails {
 
     @Enumerated(EnumType.STRING)
     private UserRole role;
-    private boolean locked;
-    private boolean enabled;
+    private boolean locked = false;
+    private boolean enabled = false;
 
     public User(String name,
                 String email,
                 String password,
                 LocalDate dob,
                 List<Address> addresses,
-                UserRole role,
-                boolean locked,
-                boolean enabled) {
+                UserRole role) {
         this.name = name;
         this.email = email;
         this.password = password;
         this.dob = dob;
         this.addresses = addresses;
         this.role = role;
-        this.locked = locked;
-        this.enabled = enabled;
     }
 
     public Integer getAge() {
@@ -106,7 +102,7 @@ public class User implements UserDetails {
 
     @Override
     public String getUsername() {
-        return name;
+        return email;
     }
 
     @Override

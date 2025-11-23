@@ -3,13 +3,15 @@ package org.oth.apppractice.service;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.oth.apppractice.Entity.User;
+import org.oth.apppractice.dto.RegistrationRequestDto;
 import org.oth.apppractice.dto.UserDto;
-import org.oth.apppractice.UserRepository;
+import org.oth.apppractice.Repository.UserRepository;
 import org.oth.apppractice.mapper.UserMapper;
 import org.oth.apppractice.Exception.BusinessException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -21,11 +23,12 @@ public class UserService implements UserDetailsService {
 
     private final UserRepository userRepository;
     private final UserMapper userMapper;
+    private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
 
     public UserDto findById(Long id) {
         User user = userRepository.findById(id).orElse(null);
-        return userMapper.toDto(user);
+        return userMapper.UsertoUserDto(user);
     }
 
     public List<UserDto> getUsers(){
@@ -34,12 +37,23 @@ public class UserService implements UserDetailsService {
     }
 
     public void saveUser(UserDto userDto){
-        User user = userMapper.fromDto(userDto);
-        userRepository.findUserByEmail(user.getEmail())
+        User user = userMapper.UserDtotoUser(userDto);
+        checkEmail(user.getEmail());
+        userRepository.save(user);
+    }
+
+    public void registerUser(RegistrationRequestDto registrationDto){
+        User user = userMapper.UserFromRegistrationDto(registrationDto);
+        checkEmail(user.getEmail());
+        user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
+        userRepository.save(user);
+    }
+
+    private void checkEmail(String email){
+        userRepository.findUserByEmail(email)
                 .ifPresent(u -> {
                     throw new IllegalStateException("Email already in use");
                 });
-        userRepository.save(user);
     }
 
     public void deleteUser(Long userId){
