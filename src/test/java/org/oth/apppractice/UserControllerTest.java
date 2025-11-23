@@ -14,7 +14,7 @@ import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
-import org.oth.apppractice.Dto.UserDTO;
+import org.oth.apppractice.dto.UserDto;
 import org.oth.apppractice.Exception.GlobalExceptionHandler;
 import org.oth.apppractice.controller.UserController;
 import org.oth.apppractice.service.UserService;
@@ -75,8 +75,8 @@ class UserControllerTest {
     @Tag("MaintainedByDiffblue")
     void testGetUserById() throws Exception {
         // Arrange
-        UserDTO userDTO = new UserDTO(1L, "Name", "jane.doe@example.org", 1);
-        when(userService.findById(Mockito.<Long>any())).thenReturn(userDTO);
+        UserDto userDto = new UserDto(1L, "Name", "jane.doe@example.org", 1);
+        when(userService.findById(Mockito.<Long>any())).thenReturn(userDto);
 
         MockHttpServletRequestBuilder requestBuilder =
                 MockMvcRequestBuilders.get("/api/v1/User/{userId}", 1L);
@@ -95,22 +95,22 @@ class UserControllerTest {
     }
 
     /**
-     * Test {@link UserController#addUser(UserDTO)}.
+     * Test {@link UserController#addUser(UserDto)}.
      *
-     * <p>Method under test: {@link UserController#addUser(UserDTO)}
+     * <p>Method under test: {@link UserController#addUser(UserDto)}
      */
     @Test
     @DisplayName("Test addUser(UserDTO)")
     @Tag("MaintainedByDiffblue")
     void testAddUser() throws Exception {
         // Arrange
-        doNothing().when(userService).saveUser(Mockito.<UserDTO>any());
+        doNothing().when(userService).saveUser(Mockito.<UserDto>any());
 
         MockHttpServletRequestBuilder contentTypeResult =
                 MockMvcRequestBuilders.post("/api/v1/User").contentType(MediaType.APPLICATION_JSON);
 
         JsonMapper jsonMapper = JsonMapper.builder().findAndAddModules().build();
-        UserDTO userDTO = new UserDTO(1L, "Name", "jane.doe@example.org", 1);
+        UserDto userDTO = new UserDto(1L, "Name", "jane.doe@example.org", 1);
         String content = jsonMapper.writeValueAsString(userDTO);
 
         MockHttpServletRequestBuilder requestBuilder = contentTypeResult.content(content);
