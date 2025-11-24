@@ -1,45 +1,59 @@
-package org.oth.apppractice;
+package org.oth.apppractice.service;
 
 import jakarta.transaction.Transactional;
+import lombok.AllArgsConstructor;
 import org.oth.apppractice.Entity.User;
-import org.oth.apppractice.DTO.UserDTO;
+import org.oth.apppractice.dto.RegistrationRequestDto;
+import org.oth.apppractice.dto.UserDto;
+import org.oth.apppractice.Repository.UserRepository;
 import org.oth.apppractice.mapper.UserMapper;
 import org.oth.apppractice.Exception.BusinessException;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Objects;
 
 @Service
-public class UserService {
+@AllArgsConstructor
+public class UserService implements UserDetailsService {
 
     private final UserRepository userRepository;
     private final UserMapper userMapper;
+    private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
-    @Autowired
-    public UserService(UserRepository userRepository, UserMapper userMapper) {
-        this.userRepository = userRepository;
-        this.userMapper = userMapper;
-    }
 
-    public UserDTO findById(Long id) {
+    public UserDto findById(Long id) {
         User user = userRepository.findById(id).orElse(null);
-        return userMapper.toDto(user);
+        return userMapper.UsertoUserDto(user);
     }
 
-    public List<UserDTO> getUsers(){
+    public List<UserDto> getUsers(){
         List<User> users = userRepository.findAll();
         return userMapper.toDtoList(users);
     }
 
-    public void saveUser(UserDTO userDTO){
-        User user = userMapper.fromDto(userDTO);
-        userRepository.findUserByEmail(user.getEmail())
+    public void saveUser(UserDto userDto){
+        User user = userMapper.UserDtotoUser(userDto);
+        checkEmail(user.getEmail());
+        userRepository.save(user);
+    }
+
+    public void registerUser(RegistrationRequestDto registrationDto){
+        User user = userMapper.UserFromRegistrationDto(registrationDto);
+        checkEmail(user.getEmail());
+        user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
+        userRepository.save(user);
+    }
+
+    private void checkEmail(String email){
+        userRepository.findUserByEmail(email)
                 .ifPresent(u -> {
                     throw new IllegalStateException("Email already in use");
                 });
-        userRepository.save(user);
     }
 
     public void deleteUser(Long userId){
@@ -80,6 +94,14 @@ public class UserService {
         }
 
         user.setEmail(email);
+    }
+
+    @Override
+    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+        return userRepository.findUserByEmail(email)
+                .orElseThrow(() ->
+                    new UsernameNotFoundException(
+                            String.format("user with email %s not found", email)));
     }
 }
 

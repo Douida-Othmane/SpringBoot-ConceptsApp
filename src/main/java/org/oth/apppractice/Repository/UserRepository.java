@@ -1,4 +1,4 @@
-package org.oth.apppractice;
+package org.oth.apppractice.Repository;
 
 import org.oth.apppractice.Entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
