@@ -13,14 +13,13 @@ public class RegistrationController {
     private final RegistrationService registrationService;
 
     @PostMapping
-    public void register(@RequestBody RegistrationRequestDto request){
-        registrationService.register(request);
+    public String register(@RequestBody RegistrationRequestDto request){
+        return registrationService.register(request);
     }
 
-    /*
+
     @GetMapping(path = "confim")
-    public String confim(@RequestParam("token") String token){
+    public String confirm(@RequestParam("token") String token){
         return registrationService.confirmToken(token);
     }
-     */
 }

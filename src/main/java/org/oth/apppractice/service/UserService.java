@@ -1,7 +1,10 @@
 package org.oth.apppractice.service;
 
 import jakarta.transaction.Transactional;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
+import org.oth.apppractice.Entity.EmailConfirmationToken;
 import org.oth.apppractice.Entity.User;
 import org.oth.apppractice.dto.RegistrationRequestDto;
 import org.oth.apppractice.dto.UserDto;
@@ -14,8 +17,10 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
+import java.util.UUID;
 
 @Service
 @AllArgsConstructor
@@ -24,6 +29,7 @@ public class UserService implements UserDetailsService {
     private final UserRepository userRepository;
     private final UserMapper userMapper;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
+    private final EmailConfirmationTokenService emailConfirmationTokenService;
 
 
     public UserDto findById(Long id) {
@@ -42,11 +48,21 @@ public class UserService implements UserDetailsService {
         userRepository.save(user);
     }
 
-    public void registerUser(RegistrationRequestDto registrationDto){
+    public String registerUser(RegistrationRequestDto registrationDto){
         User user = userMapper.UserFromRegistrationDto(registrationDto);
         checkEmail(user.getEmail());
         user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
         userRepository.save(user);
+
+        String token = UUID.randomUUID().toString();
+        EmailConfirmationToken emailConfirmationToken = new EmailConfirmationToken(
+                token,
+                LocalDateTime.now(),
+                LocalDateTime.now().plusMinutes(15),
+                user);
+        emailConfirmationTokenService.saveConfirmationToken(emailConfirmationToken);
+
+        return token;
     }
 
     private void checkEmail(String email){
@@ -102,6 +118,10 @@ public class UserService implements UserDetailsService {
                 .orElseThrow(() ->
                     new UsernameNotFoundException(
                             String.format("user with email %s not found", email)));
+    }
+
+    public void enableUser(@NotBlank(message = "Email is required") @Email(message = "Email must be valid") String email) {
+        userRepository.enableUser(email);
     }
 }
 
